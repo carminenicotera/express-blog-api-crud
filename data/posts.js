@@ -1,5 +1,5 @@
 // Array in memoria con i post
-const post = [
+const posts = [
   {
     id: 1,
     title: 'Benvenuti nel mio blog',
@@ -37,4 +37,4 @@ const post = [
   }
 ];
 
-module.exports = post;
+module.exports = posts;

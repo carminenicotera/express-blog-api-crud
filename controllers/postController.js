@@ -46,7 +46,7 @@ function update(req, res) {
 function destroy(req, res) {
   const postId = Number(req.params.id);
   const index = posts.findIndex(post => post.id === postId);
-
+ 
   if (index === -1) {
     return res.status(404).json({ error: `Post ${postId} non trovato` });
   }
