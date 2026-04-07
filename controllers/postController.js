@@ -1,48 +1,23 @@
 // Controller per i post
 // Qui mettiamo la logica delle funzioni per gestire i post
 
-// Array in memoria con i post
-const posts = [
-  {
-    id: 1,
-    title: 'Benvenuti nel mio blog',
-    content: 'Questo è il primo post del mio blog personale.',
-    image: '/images/post1.svg',
-    tags: ['introduzione', 'blog', 'express']
-  },
-  {
-    id: 2,
-    title: 'Un secondo post',
-    content: 'Aggiungiamo altro contenuto al nostro blog con Express.',
-    image: '/images/post2.svg',
-    tags: ['esercizio', 'server', 'javascript']
-  },
-  {
-    id: 3,
-    title: 'Come usare le immagini statiche',
-    content: 'Ora il blog mostra immagini salvate nella cartella public.',
-    image: '/images/post3.svg',
-    tags: ['statico', 'assets', 'immagini']
-  },
-  {
-    id: 4,
-    title: 'Route JSON',
-    content: 'La rotta /posts restituisce tutti i post in formato JSON.',
-    image: '/images/post4.svg',
-    tags: ['json', 'api', 'post']
-  },
-  {
-    id: 5,
-    title: 'Ultimo post di prova',
-    content: 'Questo è l’ultimo post del nostro array di prova.',
-    image: '/images/post5.svg',
-    tags: ['progetto', 'tutorial', 'express']
-  }
-];
+// Importiamo l'array dei post dal file di dati
+const posts = require('../data/posts');
 
 // Funzione per ottenere tutti i post (index)
 function index(req, res) {
-  res.json(posts);
+  // Inizialmente, restituiamo tutti i post senza filtri
+  let filteredPosts = posts;
+
+  // Se c'è un query parameter "tag", filtriamo i post per quel tag
+  const tag = req.query.tag;
+
+  if (tag) {
+    filteredPosts = posts.filter(post => post.tags.includes(tag));
+  }
+
+  // Restituiamo i post filtrati (o tutti se non c'è il tag) in formato JSON
+  res.json(filteredPosts);
 }
 
 // Funzione per ottenere un singolo post (show)
@@ -51,7 +26,7 @@ function show(req, res) {
   const post = posts.find(post => post.id === postId);
 
   if (!post) {
-    return res.status(404).send(`Post ${postId} non trovato`);
+    return res.status(404).json({ error: `Post ${postId} non trovato` });
   }
 
   res.json(post);
@@ -69,7 +44,16 @@ function update(req, res) {
 
 // Funzione per eliminare un post (destroy)
 function destroy(req, res) {
-  res.send('Cancellazione del post ' + req.params.id);
+  const postId = Number(req.params.id);
+  const index = posts.findIndex(post => post.id === postId);
+
+  if (index === -1) {
+    return res.status(404).json({ error: `Post ${postId} non trovato` });
+  }
+
+  posts.splice(index, 1);
+  console.log('Lista post aggiornata:', posts);
+  res.status(204).send();
 }
 
 // Esportiamo le funzioni per usarle nel router
