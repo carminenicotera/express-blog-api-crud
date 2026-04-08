@@ -57,19 +57,32 @@ function store(req, res) {
 
 // Funzione per aggiornare un post (update)
 function update(req, res) {
-  res.send('Modifica integrale del post ' + req.params.id);
+  const postId = Number(req.params.id);
+  const postindex = posts.findIndex(post => post.id === postId);
+
+  if (postindex === -1) {
+    return res.status(404).json({ error: `Post ${postId} non trovato` });
+  }
+
+  // Aggiorniamo i campi del post con i dati ricevuti nel corpo della richiesta (se presenti) o manteniamo quelli esistenti se non vengono forniti nel corpo della richiesta 
+  posts[postindex].title = req.body.title || posts[postindex].title;
+  posts[postindex].content = req.body.content || posts[postindex].content;
+  posts[postindex].tags = req.body.tags || posts[postindex].tags;
+
+  console.log('Lista post aggiornata:', posts);
+  res.json(posts[postindex]);
 }
 
 // Funzione per eliminare un post (destroy)
 function destroy(req, res) {
   const postId = Number(req.params.id);
-  const index = posts.findIndex(post => post.id === postId);
+  const postindex = posts.findIndex(post => post.id === postId);
  
-  if (index === -1) {
+  if (postindex === -1) {
     return res.status(404).json({ error: `Post ${postId} non trovato` });
   }
 
-  posts.splice(index, 1);
+  posts.splice(postindex, 1);
   console.log('Lista post aggiornata:', posts);
   res.status(204).send();
 }
