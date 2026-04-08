@@ -32,9 +32,27 @@ function show(req, res) {
   res.json(post);
 }
 
-// Funzione per creare un nuovo post (create)
-function create(req, res) {
-  res.send('Creazione nuovo post');
+// Funzione per creare un nuovo post (store)
+function store(req, res) {
+  //console.log(req.body);
+  // Creiamo un nuovo post con i dati ricevuti nel corpo della richiesta
+  // Generiamo un nuovo ID incrementale basato sull'ultimo post nell'array
+  const newId = posts.length > 0 ? posts[posts.length - 1].id + 1 : 1;
+
+  // Creiamo un nuovo oggetto post con i dati ricevuti e il nuovo ID
+  const newPost = {
+    id: newId,
+    title: req.body.title,
+    content: req.body.content,
+    tags: req.body.tags || []
+  };
+
+  // Aggiungiamo il nuovo post all'array dei post
+  posts.push(newPost);
+  console.log(posts);
+  
+  // Restituiamo il nuovo post creato in formato JSON con status 201 (Created)
+  res.status(201).json(newPost);
 }
 
 // Funzione per aggiornare un post (update)
@@ -60,7 +78,7 @@ function destroy(req, res) {
 module.exports = {
   index,
   show,
-  create,
+  store,
   update,
   destroy
 };

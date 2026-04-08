@@ -13,7 +13,7 @@ router.get('/', postController.index);
 router.get('/:id', postController.show);
 
 // Store: conferma la creazione di un nuovo post
-router.post('/', postController.create);
+router.post('/', postController.store);
 
 // Update: conferma la modifica di un post esistente
 router.put('/:id', postController.update);

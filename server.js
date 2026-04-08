@@ -6,6 +6,9 @@ const app = express();
 // Serviamo i file statici dalla cartella public/images
 app.use(express.static('public'));
 
+// Middleware per parsare il corpo delle richieste JSON
+app.use(express.json())
+
 // Registro il router dei post con prefisso /posts
 app.use('/posts', postsRouter);
 
